@@ -1,0 +1,37 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Book {
+  - UUID id
+  - String code
+  - String title
+  - List<Edition> editions
+}
+
+class Edition {
+  - UUID id
+  - String editionNumber
+  - String editionName
+  - List<TableOfContentsEntry> contents
+}
+
+class TableOfContentsEntry {
+  - UUID id
+  - String title
+  - int order
+  - TableOfContentsEntry parent
+  - List<TableOfContentsEntry> children
+  - Edition edition
+}
+
+Book "1" --> "*" Edition : has
+Edition "1" --> "*" TableOfContentsEntry : contains
+TableOfContentsEntry "0..1" --> "*" TableOfContentsEntry : parent-children
+
+note right of TableOfContentsEntry
+  Self-referencing structure
+  allows hierarchical content:
+  Part → Chapter → Section
+end note
+
+@enduml

@@ -1,9 +1,13 @@
 package exercicio2.services;
 
+import exercicio2.domain.Book;
 import exercicio2.domain.Edition;
 import exercicio2.domain.TableOfContentsEntry;
+import exercicio2.dtos.BookDTO;
+import exercicio2.dtos.EditionDTO;
 import exercicio2.dtos.EntryDTO;
 import exercicio2.dtos.TableOfContentsDTO;
+import exercicio2.repositories.BookRepository;
 import exercicio2.repositories.EditionRepository;
 import exercicio2.repositories.TableOfContentsEntryRepository;
 import org.springframework.stereotype.Service;
@@ -16,11 +20,14 @@ public class TableOfContentsService {
 
     private final EditionRepository editionRepository;
     private final TableOfContentsEntryRepository entryRepository;
+    private final BookRepository bookRepository;
 
     public TableOfContentsService(EditionRepository editionRepository,
-                                  TableOfContentsEntryRepository entryRepository) {
+                                  TableOfContentsEntryRepository entryRepository,
+                                  BookRepository bookRepository) {
         this.editionRepository = editionRepository;
         this.entryRepository = entryRepository;
+        this.bookRepository = bookRepository;
     }
 
     public TableOfContentsDTO getTableOfContents(String bookCode, String editionNumber) {
@@ -62,5 +69,20 @@ public class TableOfContentsService {
 
         dto.setChildren(childrenDTO);
         return dto;
+    }
+
+    public List<BookDTO> getAllBooks() {
+        return bookRepository.findAll().stream()
+                .map(book -> new BookDTO(book.getCode(), book.getTitle()))
+                .collect(Collectors.toList());
+    }
+
+    public List<EditionDTO> getEditionsByBookCode(String bookCode) {
+        Book book = bookRepository.findByCode(bookCode)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        return book.getEditions().stream()
+                .map(edition -> new EditionDTO(edition.getEditionNumber(), edition.getEditionName()))
+                .collect(Collectors.toList());
     }
 }

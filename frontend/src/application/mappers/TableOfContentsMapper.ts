@@ -29,7 +29,7 @@ export class TableOfContentsMapper {
       book,
       edition,
       totalEntries: dto.totalEntries,
-      entries: dto.contents.map(this.entryToDomain)
+      entries: dto.contents.map(entry => this.entryToDomain(entry))
     };
   }
 
