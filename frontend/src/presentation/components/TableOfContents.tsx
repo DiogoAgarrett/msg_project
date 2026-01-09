@@ -20,6 +20,6 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ data }) => {
           ))}
       </div>
       <p>Total Entries: {data.totalEntries}</p>
-    </div>
+    </div> 
   );
 };
